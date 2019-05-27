@@ -1,0 +1,110 @@
+{% extends "news/base.html" %}
+{% block title %}文章详情页{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="../../static/news/js/detail.js"></script>
+{% endblock %}
+
+
+{% block content_title %}
+
+    <div class="detail_con fl">
+    <h3>{{ data.new.title }}</h3>
+    <div class="detail_about clearfix">
+        <span class="time_souce fl">{{ data.new.create_time }} 来源: {{ data.new.source }}</span>
+        <span class="comment fr">3</span>
+    </div>
+
+    <p class="summary">
+
+        {{ data.new.digest }}
+    </p>
+{% endblock %}
+{% block content_con %}
+    {{ data.new.content | safe }}
+    <a href="javascript:;" new_id="{{ data.new.id }}" class="collection block-center"
+       style="display: {% if not data.is_collection %}block{% else %}none{% endif %}">收藏</a>
+    <a href="javascript:;" class="collected block-center" new_id="{{ data.new.id }}"
+       style="display: {% if data.is_collection %}block{% else %}none{% endif %};"><span class="out">已收藏</span><span
+            class="over">取消收藏</span></a>
+    {% if not data.user_info %}
+        <div class="comment_form_logout">
+            登录发表你的评论
+        </div>
+
+    {% else %}
+        <form action="javascript:;" class="comment_form" new_id="{{ data.new.id }}">
+            <div class="person_pic">
+                <img src="
+
+
+                        {% if data.user_info.avatar_url %}{{ data.user_info.avatar_url }}{% else %}../../static/news/images/worm.jpg{% endif %}"
+                     alt="用户图标">
+            </div>
+            <textarea placeholder="请发表您的评论" class="comment_input"></textarea>
+            <input type="submit" name="" value="评 论" class="comment_sub">
+        </form>
+    {% endif %}
+
+
+    <div class="comment_count">
+                {{ data.length }}条评论
+    </div>
+
+    <div class="comment_list_con">
+        {% if data.son_parent_list %}
+        {% for son_parent in data.son_parent_list %}
+            <div class="comment_list">
+                <div class="person_pic fl">
+                    <img src="
+
+
+                            {% if son_parent.parent.user.avatar_url %}{{ son_parent.parent.user.avatar_url }}{% else %}../../static/news/images/worm.jpg{% endif %}"
+                         alt="用户图标">
+                </div>
+                <div class="user_name fl">{{ son_parent.parent.user.nick_name }}</div>
+                <div class="comment_text fl">
+                    {{ son_parent.parent.content }}
+                </div>
+                {% if son_parent.son %}
+                    {% for son in son_parent.son %}
+                        <div class="reply_text_con fl">
+                            <div class="user_name2">{{ son.user.nick_name }}</div>
+                            <div class="reply_text">
+                                {{ son.content }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="comment_time fl">{{ son_parent.parent.create_time }}</div>
+                <a href="javascript:;" class="comment_up {% if son_parent.parent.is_like %}has_comment_up{% endif %} fr" data-commentid="{{ son_parent.parent.id }}" data-newsid="{{ data.new.id }}">赞</a>
+                <a href="javascript:;" class="comment_reply fr">回复</a>
+                <from class="reply_form fl comment_form" comment_id="{{ son_parent.parent.id }}"
+                      new_id="{{ son_parent.parent.news_id }}">
+                    <textarea class="reply_input"></textarea>
+                    <input type="submit" name="" value="回复" class="reply_sub fr">
+                    <input type="reset" name="" value="取消" class="reply_cancel fr">
+                </from>
+
+            </div>
+
+
+        {% endfor %}
+    {% endif %}
+    </div>
+    </div>
+{% endblock %}
+{% block author_card %}
+    {% if data.new.author %}
+    <div class="author_card">
+        <a href="../user/info" class="author_pic"><img src="{{ data.new.author.avatar_url }}" alt="author_pic"></a>
+        <a href="../user/info" class="author_name">{{ data.new.author.nick_name }}</a>
+        <div class="author_resume">{{ data.new.author.signature }}</div>
+        <div class="writings"><span>总篇数</span><b>{{ data.new.author.news_count }}</b></div>
+        <div class="follows"><span>粉丝</span><b>{{ data.new.author.followers_count }}</b></div>
+        <a href="javascript:;" class="focus fr">关注</a>
+        <a href="javascript:;" class="focused fr"><span class="out">已关注</span><span class="over">取消关注</span></a>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block href %}href="{% endblock %}
